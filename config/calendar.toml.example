@@ -1,0 +1,2 @@
+calendar_id = "your google calendar id"
+credential_file = "/path/to/your_service_account_credential.json"

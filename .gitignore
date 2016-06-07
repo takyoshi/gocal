@@ -22,3 +22,8 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+# user settings
+config/calendar.toml
+gcal
+cmd/gcal/gcal
