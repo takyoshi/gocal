@@ -53,19 +53,11 @@ func main() {
 		if err != nil {
 			log.Fatalf("Unable to retrieve next ten of the user's events. %v", err)
 		}
-		if len(events.Items) > 0 {
-			for _, i := range events.Items {
-				var when string
-				if i.Start.DateTime != "" {
-					when = i.Start.DateTime
-				} else {
-					when = i.Start.Date
-				}
-				fmt.Printf("%s\t%s\n", when, i.Summary)
-			}
-		} else {
-			fmt.Printf("No upcoming events found.\n")
+		res, err := events.MarshalJSON()
+		if err != nil {
+			log.Fatalf("%v", err)
 		}
+		fmt.Printf("%s", string(res))
 	case evInsert.FullCommand():
 		e := gocal.Event{
 			StartTime: *insertStart,
@@ -73,7 +65,6 @@ func main() {
 			Title:     *eventName,
 			Detail:    *eventDetail,
 		}
-
 		gc.InsertEvent(e)
 	}
 }
