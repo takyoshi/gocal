@@ -6,16 +6,16 @@ import (
 	"os"
 	"time"
 
-	"github.com/takyoshi/gcal"
+	"github.com/takyoshi/gocal"
 	"google.golang.org/api/calendar/v3"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 var (
-	gcalCmd  = kingpin.New("gcal", "google calendar events api")
-	confFile = gcalCmd.Flag("conf", "config file").Short('c').Default(os.Getenv("HOME") + "/.config/gcal/calendar.toml").String()
+	gocalCmd  = kingpin.New("gocal", "google calendar events api")
+	confFile = gocalCmd.Flag("conf", "config file").Short('c').Default(os.Getenv("HOME") + "/.config/gocal/calendar.toml").String()
 
-	evCmd = gcalCmd.Command("events", "google calendar events api")
+	evCmd = gocalCmd.Command("events", "google calendar events api")
 	// GetList
 	evList    = evCmd.Command("list", "insert google calendar events")
 	listStart = evList.Flag("start-time", "start time of event formatted by RFC3339").
@@ -35,15 +35,15 @@ var (
 
 func main() {
 
-	gcalCmd.Version("v0.0.1")
-	subcmd := kingpin.MustParse(gcalCmd.Parse(os.Args[1:]))
+	gocalCmd.Version("v0.0.1")
+	subcmd := kingpin.MustParse(gocalCmd.Parse(os.Args[1:]))
 
-	conf, err := gcal.LoadConfig(*confFile)
+	conf, err := gocal.LoadConfig(*confFile)
 	if err != nil {
 		log.Fatalf("Unable to load config file. %v", err)
 	}
 
-	gc, err := gcal.NewCalendarClient(conf, calendar.CalendarScope)
+	gc, err := gocal.NewCalendarClient(conf, calendar.CalendarScope)
 	if err != nil {
 		log.Fatalf("Unable to retrieve calendar Client %v", err)
 	}
@@ -68,7 +68,7 @@ func main() {
 			fmt.Printf("No upcoming events found.\n")
 		}
 	case evInsert.FullCommand():
-		e := gcal.Event{
+		e := gocal.Event{
 			StartTime: *insertStart,
 			EndTime:   *insertEnd,
 			Title:     *eventName,

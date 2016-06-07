@@ -1,4 +1,4 @@
-package gcal
+package gocal
 
 import (
 	"github.com/BurntSushi/toml"

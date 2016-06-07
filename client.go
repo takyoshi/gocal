@@ -1,4 +1,4 @@
-package gcal
+package gocal
 
 import (
 	"io/ioutil"
@@ -8,13 +8,13 @@ import (
 	"google.golang.org/api/calendar/v3"
 )
 
-// GcalClient is a google calenar api client
-type GcalClient struct {
+// GocalClient is a google calenar api client
+type GocalClient struct {
 	Srv  *calendar.Service
 	Conf Config
 }
 
-// Event is google calendar event at Gcal
+// Event is google calendar event at Gocal
 type Event struct {
 	Title     string `json:"title"`
 	Detail    string `json:"detail"`
@@ -24,8 +24,8 @@ type Event struct {
 
 // NewCalendarClient returns  http client google calandar api
 // scope is calendar.CalendarReadonlyScope or calendar.CalendarScope
-func NewCalendarClient(c Config, scope string) (*GcalClient, error) {
-	var gc GcalClient
+func NewCalendarClient(c Config, scope string) (*GocalClient, error) {
+	var gc GocalClient
 	b, err := ioutil.ReadFile(c.Credential)
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func NewCalendarClient(c Config, scope string) (*GcalClient, error) {
 		return nil, err
 	}
 
-	//client := gcal.NewClient(ctx, config)
+	//client := gocal.NewClient(ctx, config)
 	client := jc.Client(oauth2.NoContext)
 
 	srv, err := calendar.New(client)
@@ -50,7 +50,7 @@ func NewCalendarClient(c Config, scope string) (*GcalClient, error) {
 }
 
 // GetEventsList returns event list
-func (gc GcalClient) GetEventsList(startTime string, endTime string) (*calendar.Events, error) {
+func (gc GocalClient) GetEventsList(startTime string, endTime string) (*calendar.Events, error) {
 	events, err := gc.Srv.Events.List(gc.Conf.CalendarID).TimeMax(endTime).
 		TimeMin(startTime).SingleEvents(true).OrderBy("startTime").Do()
 	if err != nil {
@@ -60,7 +60,7 @@ func (gc GcalClient) GetEventsList(startTime string, endTime string) (*calendar.
 }
 
 // InsertEvent insert an event to the google calendar
-func (gc GcalClient) InsertEvent(event Event) error {
+func (gc GocalClient) InsertEvent(event Event) error {
 	start := calendar.EventDateTime{
 		DateTime: event.StartTime,
 	}

@@ -1,15 +1,15 @@
-# gcal
+# gocal
 Simple cli tool for google calendar api.
 
 ## Usage
 ```
-usage: gcal [<flags>] <command> [<args> ...]
+usage: gocal [<flags>] <command> [<args> ...]
 
 google calendar events api
 
 Flags:
       --help     Show context-sensitive help (also try --help-long and --help-man).
-  -c, --conf="$HOME/.config/gcal/calendar.toml"  
+  -c, --conf="$HOME/.config/gocal/calendar.toml"  
                  config file
       --version  Show application version.
 
@@ -27,7 +27,7 @@ Commands:
 
 ## Config
 
-The format is toml, and default path is `$HOME/.config/gcal/calendar.toml`.
+The format is toml, and default path is `$HOME/.config/gocal/calendar.toml`.
 
 ```
 calendar_id = "your calendar id"
