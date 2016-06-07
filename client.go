@@ -9,6 +9,13 @@ import (
 	"google.golang.org/api/calendar/v3"
 )
 
+// Gocal is interface for google calendar api
+type Gocal interface {
+	GetEventsList(string, string) (*calendar.Events, error)
+	InsertEvent(Event) error
+	InsertEvents([]Event)
+}
+
 // GocalClient is a google calenar api client
 type GocalClient struct {
 	Srv  *calendar.Service
