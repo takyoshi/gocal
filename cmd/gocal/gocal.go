@@ -12,9 +12,10 @@ import (
 )
 
 var (
-	gocalCmd  = kingpin.New("gocal", "google calendar events api")
+	gocalCmd = kingpin.New("gocal", "google calendar events api")
 	confFile = gocalCmd.Flag("conf", "config file").Short('c').Default(os.Getenv("HOME") + "/.config/gocal/calendar.toml").String()
 
+	// Events command
 	evCmd = gocalCmd.Command("events", "google calendar events api")
 	// GetList
 	evList    = evCmd.Command("list", "insert google calendar events")
@@ -22,7 +23,6 @@ var (
 			Short('s').Default(time.Now().Add(-1 * 24 * 7 * time.Hour).Format(time.RFC3339)).String()
 	listEnd = evList.Flag("end-time", "start time of event formatted by RFC3339").
 		Short('e').Default(time.Now().Format(time.RFC3339)).String()
-
 	// Insert
 	evInsert    = evCmd.Command("insert", "insert google calendar events")
 	eventDetail = evInsert.Flag("detail", "detail of event").Default("").String()
@@ -34,7 +34,6 @@ var (
 )
 
 func main() {
-
 	gocalCmd.Version("v0.0.1")
 	subcmd := kingpin.MustParse(gocalCmd.Parse(os.Args[1:]))
 

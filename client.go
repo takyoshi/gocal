@@ -36,7 +36,6 @@ func NewCalendarClient(c Config, scope string) (*GocalClient, error) {
 		return nil, err
 	}
 
-	//client := gocal.NewClient(ctx, config)
 	client := jc.Client(oauth2.NoContext)
 
 	srv, err := calendar.New(client)
