@@ -9,7 +9,7 @@ google calendar events api
 
 Flags:
       --help     Show context-sensitive help (also try --help-long and --help-man).
-  -c, --conf="/home/tkyshm/.config/gcal/calendar.toml"  
+  -c, --conf="$HOME/.config/gcal/calendar.toml"  
                  config file
       --version  Show application version.
 
