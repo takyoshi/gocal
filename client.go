@@ -2,6 +2,7 @@ package gocal
 
 import (
 	"io/ioutil"
+	"log"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -76,4 +77,15 @@ func (gc GocalClient) InsertEvent(event Event) error {
 
 	_, err := gc.Srv.Events.Insert(gc.Conf.CalendarID, &ge).Do()
 	return err
+}
+
+// InsertEvents insert multiple events
+func (gc GocalClient) InsertEvents(events []Event) {
+	var err error
+	for _, e := range events {
+		err = gc.InsertEvent(e)
+		if err != nil {
+			log.Printf("[Error] %s", err.Error())
+		}
+	}
 }

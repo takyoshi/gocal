@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"time"
@@ -25,8 +27,9 @@ var (
 		Short('e').Default(time.Now().Format(time.RFC3339)).String()
 	// Insert
 	evInsert    = evCmd.Command("insert", "insert google calendar events")
+	evJSON      = evInsert.Flag("json-file", "insert google events from json file").Default("").String()
 	eventDetail = evInsert.Flag("detail", "detail of event").Default("").String()
-	eventName   = evInsert.Flag("name", "event name").Required().String()
+	eventName   = evInsert.Flag("name", "event name").Default("").String()
 	insertStart = evInsert.Flag("start-time", "start time of event formatted by RFC3339").
 			Short('s').Default(time.Now().Format(time.RFC3339)).String()
 	insertEnd = evInsert.Flag("end-time", "start time of event formatted by RFC3339").
@@ -59,12 +62,36 @@ func main() {
 		}
 		fmt.Printf("%s", string(res))
 	case evInsert.FullCommand():
-		e := gocal.Event{
-			StartTime: *insertStart,
-			EndTime:   *insertEnd,
-			Title:     *eventName,
-			Detail:    *eventDetail,
+		if *eventName == "" && *evJSON == "" {
+			log.Fatalln("Empty both --name and --json-file parameters.")
 		}
-		gc.InsertEvent(e)
+
+		if *evJSON != "" {
+			var evts []gocal.Event
+			f, err := ioutil.ReadFile(*evJSON)
+			if err != nil {
+				log.Fatalf("%s", err)
+			}
+
+			if err = json.Unmarshal(f, &evts); err != nil {
+				log.Fatalf("%s", err)
+			}
+
+			for index, e := range evts {
+				e.StartTime = *insertStart
+				e.EndTime = *insertEnd
+				evts[index] = e
+			}
+			gc.InsertEvents(evts)
+		} else {
+			e := gocal.Event{
+				StartTime: *insertStart,
+				EndTime:   *insertEnd,
+				Title:     *eventName,
+				Detail:    *eventDetail,
+			}
+
+			gc.InsertEvent(e)
+		}
 	}
 }
