@@ -25,5 +25,3 @@ _testmain.go
 
 # user settings
 config/calendar.toml
-gcal
-cmd/gcal/gcal
