@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/user"
 	"time"
 
 	"github.com/takyoshi/gcal"
@@ -12,34 +11,29 @@ import (
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
+var (
+	gcalCmd  = kingpin.New("gcal", "google calendar events api")
+	confFile = gcalCmd.Flag("conf", "config file").Short('c').Default(os.Getenv("HOME") + "/.config/gcal/calendar.toml").String()
+
+	evCmd = gcalCmd.Command("events", "google calendar events api")
+	// GetList
+	evList    = evCmd.Command("list", "insert google calendar events")
+	listStart = evList.Flag("start-time", "start time of event formatted by RFC3339").
+			Short('s').Default(time.Now().Add(-1 * 24 * 7 * time.Hour).Format(time.RFC3339)).String()
+	listEnd = evList.Flag("end-time", "start time of event formatted by RFC3339").
+		Short('e').Default(time.Now().Format(time.RFC3339)).String()
+
+	// Insert
+	evInsert    = evCmd.Command("insert", "insert google calendar events")
+	eventDetail = evInsert.Flag("detail", "detail of event").Default("").String()
+	eventName   = evInsert.Flag("name", "event name").Required().String()
+	insertStart = evInsert.Flag("start-time", "start time of event formatted by RFC3339").
+			Short('s').Default(time.Now().Format(time.RFC3339)).String()
+	insertEnd = evInsert.Flag("end-time", "start time of event formatted by RFC3339").
+			Short('e').Default(time.Now().Add(15 * time.Minute).Format(time.RFC3339)).String()
+)
+
 func main() {
-	usr, err := user.Current()
-	if err != nil {
-		log.Fatalf("%v", err)
-	}
-	confDir := usr.HomeDir + "/.config/gcal"
-
-	var (
-		gcalCmd  = kingpin.New("gcal", "google calendar events api")
-		confFile = gcalCmd.Flag("conf", "config file").Short('c').Default(confDir + "/calendar.toml").String()
-
-		evCmd = gcalCmd.Command("events", "google calendar events api")
-		// GetList
-		evList    = evCmd.Command("list", "insert google calendar events")
-		listStart = evList.Flag("start-time", "start time of event formatted by RFC3339").
-				Short('s').Default(time.Now().Add(-1 * 24 * 7 * time.Hour).Format(time.RFC3339)).String()
-		listEnd = evList.Flag("end-time", "start time of event formatted by RFC3339").
-			Short('e').Default(time.Now().Format(time.RFC3339)).String()
-
-		// Insert
-		evInsert    = evCmd.Command("insert", "insert google calendar events")
-		eventDetail = evInsert.Flag("detail", "detail of event").Default("").String()
-		eventName   = evInsert.Flag("name", "event name").Required().String()
-		insertStart = evInsert.Flag("start-time", "start time of event formatted by RFC3339").
-				Short('s').Default(time.Now().Format(time.RFC3339)).String()
-		insertEnd = evInsert.Flag("end-time", "start time of event formatted by RFC3339").
-				Short('e').Default(time.Now().Add(15 * time.Minute).Format(time.RFC3339)).String()
-	)
 
 	gcalCmd.Version("v0.0.1")
 	subcmd := kingpin.MustParse(gcalCmd.Parse(os.Args[1:]))
