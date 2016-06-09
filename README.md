@@ -30,7 +30,7 @@ Commands:
 `gocal` supports to insert from JSON file.
 
 ```
-$ gocal events insert --from-json /path/to/jsonfile.json
+$ gocal events insert --json-file /path/to/jsonfile.json
 ```
 
 example JSON:
