@@ -25,6 +25,26 @@ Commands:
 
 ```
 
+### Insert events from JSON file
+
+`gocal` supports to insert from JSON file.
+
+```
+$ gocal events insert --from-json /path/to/jsonfile.json
+```
+
+example json:
+
+```json
+[
+  {
+      "title": "input title",
+      "detail": "input a description in this field"
+  },
+  ...
+]
+```
+
 ## Config
 
 The format is toml, and default path is `$HOME/.config/gocal/calendar.toml`.
