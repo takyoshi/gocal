@@ -33,7 +33,7 @@ Commands:
 $ gocal events insert --from-json /path/to/jsonfile.json
 ```
 
-example json:
+example JSON:
 
 ```json
 [
