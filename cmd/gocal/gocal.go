@@ -37,7 +37,7 @@ var (
 )
 
 func main() {
-	gocalCmd.Version("v0.0.1")
+	gocalCmd.Version("v0.0.2")
 	subcmd := kingpin.MustParse(gocalCmd.Parse(os.Args[1:]))
 
 	conf, err := gocal.LoadConfig(*confFile)
