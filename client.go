@@ -26,8 +26,10 @@ type GocalClient struct {
 type Event struct {
 	Title     string `json:"title"`
 	Detail    string `json:"detail"`
-	StartTime string `json:"start_time"`
-	EndTime   string `json:"end_time"`
+	StartDate string `json:"start_date,omitempty"`
+	EndDate   string `json:"end_date,omitempty"`
+	StartTime string `json:"start_time,omitempty"`
+	EndTime   string `json:"end_time,omitempty"`
 }
 
 // NewCalendarClient returns  http client google calandar api
@@ -68,11 +70,28 @@ func (gc GocalClient) GetEventsList(startTime string, endTime string) (*calendar
 
 // InsertEvent insert an event to the google calendar
 func (gc GocalClient) InsertEvent(event Event) error {
-	start := calendar.EventDateTime{
-		DateTime: event.StartTime,
-	}
-	end := calendar.EventDateTime{
-		DateTime: event.EndTime,
+	var start calendar.EventDateTime
+	var end calendar.EventDateTime
+	if event.StartDate != "" || event.EndDate != "" {
+		if event.StartDate == "" {
+			event.StartDate = event.EndTime
+		} else if event.EndTime == "" {
+			event.EndTime = event.StartDate
+		}
+
+		start = calendar.EventDateTime{
+			Date: event.StartDate,
+		}
+		end = calendar.EventDateTime{
+			Date: event.EndDate,
+		}
+	} else {
+		start = calendar.EventDateTime{
+			DateTime: event.StartTime,
+		}
+		end = calendar.EventDateTime{
+			DateTime: event.EndTime,
+		}
 	}
 
 	ge := calendar.Event{
