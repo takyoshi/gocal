@@ -3,7 +3,7 @@ DATE:=$(shell date +%Y-%m-%dT%H:%M:%SZ)
 
 .PHONY: test get-deps install clean
 
-all: test 
+all: test
 
 install:
 	 cd cmd/gocal && go build -ldflags "-X=main.version ${GIT_VER} -X main.buildDate ${DATE}"
