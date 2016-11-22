@@ -26,18 +26,20 @@ var (
 	listEnd = evList.Flag("end-time", "start time of event formatted by RFC3339").
 		Short('e').Default(time.Now().Format(time.RFC3339)).String()
 	// Insert
-	evInsert    = evCmd.Command("insert", "insert google calendar events")
-	evJSON      = evInsert.Flag("json-file", "insert google events from json file").Default("").String()
-	eventDetail = evInsert.Flag("detail", "detail of event").Default("").String()
-	eventName   = evInsert.Flag("name", "event name").Default("").String()
-	insertStart = evInsert.Flag("start-time", "start time of event formatted by RFC3339").
+	evInsert        = evCmd.Command("insert", "insert google calendar events")
+	evJSON          = evInsert.Flag("json-file", "insert google events from json file").Default("").String()
+	eventDetail     = evInsert.Flag("detail", "detail of event").Default("").String()
+	eventName       = evInsert.Flag("name", "event name").Default("").String()
+	insertStartDate = evInsert.Flag("start-date", "start date of event formatted by YYYY-mm-dd").Short('S').String()
+	insertEndDate   = evInsert.Flag("end-date", "end date of event formatted by YYYY-mm-dd").Short('E').String()
+	insertStart     = evInsert.Flag("start-time", "start time of event formatted by RFC3339").
 			Short('s').Default(time.Now().Format(time.RFC3339)).String()
-	insertEnd = evInsert.Flag("end-time", "start time of event formatted by RFC3339").
+	insertEnd = evInsert.Flag("end-time", "end time of event formatted by RFC3339").
 			Short('e').Default(time.Now().Add(15 * time.Minute).Format(time.RFC3339)).String()
 )
 
 func main() {
-	gocalCmd.Version("v0.0.2")
+	gocalCmd.Version("v0.0.3")
 	subcmd := kingpin.MustParse(gocalCmd.Parse(os.Args[1:]))
 
 	conf, err := gocal.LoadConfig(*confFile)
@@ -80,18 +82,26 @@ func main() {
 			for index, e := range evts {
 				e.StartTime = *insertStart
 				e.EndTime = *insertEnd
+				e.StartTime = *insertStartDate
+				e.EndTime = *insertEndDate
 				evts[index] = e
 			}
 			gc.InsertEvents(evts)
 		} else {
-			e := gocal.Event{
+			var e gocal.Event
+			e = gocal.Event{
 				StartTime: *insertStart,
 				EndTime:   *insertEnd,
+				StartDate: *insertStartDate,
+				EndDate:   *insertEndDate,
 				Title:     *eventName,
 				Detail:    *eventDetail,
 			}
 
-			gc.InsertEvent(e)
+			err := gc.InsertEvent(e)
+			if err != nil {
+				log.Printf("[Error] %s", err.Error())
+			}
 		}
 	}
 }
